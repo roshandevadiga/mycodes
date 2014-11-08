@@ -1,4 +1,4 @@
-# Your task is to solve equations with one unknown, denoted as x. Equation consists of characters '+', '-', 'x', '=' and integers. 
+# Equation consists of characters '+', '-', 'x', '=' and integers. 
 # Characters '+' and '=' never occur at the beginning nor at the end of the equation, the sign '-' is never placed at the end of the 
 # equation, two identical characters can't be put together (pairs '-','+' and '=','+' as well).
 
@@ -44,7 +44,7 @@ class Equation
     constant = variable.zero? ? nil : constant_part(rhs, lhs)
 
     @solution = constant.fdiv(variable).round(3) if !variable.zero?
-    @solution = 0 if @solution.zero? #ignore sign -ve / +ve
+    @solution = 0 if !@solution.nil? && @solution.zero? #ignore sign -ve / +ve
 	end
 
   def display
@@ -69,9 +69,10 @@ class Equation
   end
 
   def constant_part(rhs, lhs)
-    regex = /(\+[0-9]+|-[0-9]+|[0-9]+)(-|\+|$)(?!x)/
-    lhs_part = lhs.scan(regex).flatten.uniq - ['-','+','']
-    rhs_part = rhs.scan(regex).flatten.uniq - ['-','+','']
+    regex = /(\+[0-9]+|-[0-9]+|[0-9]+)/
+    variable_regex = /(\+[0-9]+|-[0-9]+|[0-9]+)x/
+    lhs_part = lhs.scan(regex).flatten.uniq - lhs.scan(variable_regex).flatten.uniq 
+    rhs_part = rhs.scan(regex).flatten.uniq - rhs.scan(variable_regex).flatten.uniq 
 
     return (sum(rhs_part) - sum(lhs_part))
   end
