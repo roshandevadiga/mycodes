@@ -18,8 +18,6 @@
 # -8
 # NO
 
-require 'pry'
-
 class InvalidTestSizeError < StandardError; end
 class EquationInvalidError < StandardError; end
 class InvalidInputSize < StandardError; end
@@ -28,14 +26,14 @@ class Equation
 	def initialize(input)
 		@equ =  input
     @solution = nil
-	end
+  end
 
-	def validate
+  def validate
     raise InvalidInputSize     if @equ.length > 1000
     raise EquationInvalidError if !syntax_valid?
-	end
+  end
 
-	def solve
+  def solve
     validate
     equ_parts = @equ.split('=')
     lhs = equ_parts.first
@@ -45,7 +43,7 @@ class Equation
 
     @solution = constant.fdiv(variable).round(3) if !variable.zero?
     @solution = 0 if !@solution.nil? && @solution.zero? #ignore sign -ve / +ve
-	end
+  end
 
   def display
     puts(@solution.nil? ? 'NO' : @solution)
