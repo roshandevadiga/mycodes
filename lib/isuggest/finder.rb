@@ -8,7 +8,13 @@ module Isuggest
 	end
 
 	module ClassMethods
+		def isuggest_seperator
+			isuggest_options[:seperator]
+		end
 
+		def total_results
+			isuggest_options[:total_suggestions].to_i
+		end
 	end
 
 	module InstanceMethods
@@ -19,28 +25,46 @@ module Isuggest
 
 		def suggestions
 			me_suggests = []
-			number = 10
-			while me_suggests.length < self.class.isuggest_options[:total_suggestions].to_i
-				me_suggests = filter_suggestions(me_suggests, number)
-				number = number * 10
+			radix = 10
+			while me_suggests.length < self.class.total_results
+				me_suggests = filter_suggestions(me_suggests, radix)
+				radix = radix * 10
 			end
 			return me_suggests
 		end
 
-		def filter_suggestions(me_suggests, number)
+		def filter_suggestions(me_suggests, num)
 			column_name = isuggest_columns.first
-			base_value = self.send(column_name)
-			while(me_suggests.length < 6) do
-				 me_suggests << "#{base_value}#{self.class.isuggest_options[:seperator]}#{rand(number)}"
-				 me_suggests.uniq!
+
+			#Considering totol_results count is relatively small < 500, doubling it this should reduce the DB hits
+			while(me_suggests.length < (self.class.total_results * 2)) do 
+			 me_suggests << create_suggestion(self.send(column_name), num) 
+			 me_suggests.uniq!
 			end
-			results = self.class.where(["#{column_name} in (#{me_suggests.map{|s| '"'+s+'"'}.join(',')})"]).select(column_name).collect(&:"#{column_name}")
+
+			db_set = self.class.where(["#{column_name} in (#{me_suggests.map{|item| '"'+item+'"'}.join(',')})"]).select(column_name).collect(&:"#{column_name}")
 			
-			return (results.length == 0) ? me_suggests : (me_suggests - results)
+			 results = (db_set.length == 0) ? me_suggests : (me_suggests - db_set)
+			 #return only the number of results set in configuration
+			 return ((results.length > self.class.total_results) ? results[0..(self.class.total_results - 1)] : results)
 		end
 
 		def isuggest_columns
 			return self.class.isuggest_options[:on]
+		end
+
+		def is_email?
+			regex = /([\w]+@[\w]+.[\w]+[.\w]*)/i
+			self.send(isuggest_columns.first).match(regex).present?
+		end
+
+		def create_suggestion(base_value, num)
+			if is_email?
+				base_value = base_value.split('@')
+				return "#{base_value.first}#{self.class.isuggest_seperator}#{rand(num)}@#{base_value.last}"
+			else
+				return "#{base_value}#{self.class.isuggest_seperator}#{rand(num)}"
+			end
 		end
 	end
 end
