@@ -1,5 +1,3 @@
-require 'pry'
-
 class DataObject
 	attr_accessor :data
 	LIMIT = 10
