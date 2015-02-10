@@ -1,0 +1,27 @@
+<% if offers.instance_of?(Fyber::Error) %>
+	<div class='error'>
+		<%= offers.message %>
+	</div>
+<%elsif offers.instance_of?(String)%>
+  <div class='noContent'>
+  	<%= offers%>
+  </div>
+<% else %>
+	<table class='table table-striped table-bordered'>
+	    <thead>
+			<th colspan="" rowspan="" headers="" scope="">Title</th>
+			<th colspan="" rowspan="" headers="" scope="">Payout</th>
+			<th colspan="" rowspan="" headers="" scope="">thumbnail</th>
+		</thead>
+
+		<tbody>
+			<% offers.each do |offer| %>
+				<tr>
+					<td colspan="" rowspan="" headers=""><%= offer.title %></td>
+					<td colspan="" rowspan="" headers=""><%= offer.payout %></td>
+					<td colspan="" rowspan="" headers=""><img src="<%= offer.thumbnail_url %>" alt="" height='40px' width='55px'></td>
+				</tr>
+			<% end %>
+		</tbody>
+	</table>
+<% end %>

@@ -1,0 +1,47 @@
+// Place all the styles related to the offers controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+.formContainer{
+	top : 40px;
+	width : 50%;
+	float :left;
+	border : 1px solid #dedede;
+	margin-top: 2%;
+}
+
+.formContainer .form-heading{
+	background-color: lightblue;
+	padding: 10px 5px 10px 5px;
+	font-weight: bold;
+	font-size: 16px;
+}
+
+.formContainer form {
+    padding: 0px 50px 50px 50px;
+}
+
+.formContainer button{
+	float: right;
+}
+
+#offerContent{
+	width: 100%;
+	float: left;
+	margin-top: 2%;
+	padding: 0px 10px 30px 0px;
+}
+
+#offerContent .error{
+	color: black;
+	padding: 5px;
+	background-color: #ff6666;
+}
+
+.heading{
+	font-size: 18px;
+	font-weight: bold;
+}
+
+.centerText{
+	text-align: center;
+}
