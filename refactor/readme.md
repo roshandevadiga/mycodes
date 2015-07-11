@@ -1,0 +1,6 @@
+- Moved the code iteratinng over the objects to mysql as it is faster 
+- Create 2 scopes in Customer model (moving the responsibility to concerned model)
+  - relations  : to give the AREL object
+  - valid_ones : filter the  valid customer at db level rather than iterating over than
+- Can have a seperate class whose function is to update records passed to them 
+- Added comments in the code where changes where made
